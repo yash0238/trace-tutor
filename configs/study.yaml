@@ -1,0 +1,221 @@
+# TRACE-Tutor Core Study Configuration
+# Version: 1.0
+# Date: January 2026
+# Purpose: Tier 1 - Core research prototype
+
+project:
+  name: "TRACE-Tutor Core"
+  version: "1.0.0"
+  seed: 42
+  description: "Role-constrained evidence selection for curriculum tutoring"
+
+corpus:
+  source: "NCERT"
+  subjects: ["Mathematics", "Science"]  # Math (3-5) + Science (6-8)
+  grades: [3, 4, 5, 6, 7, 8]  # Primary + Middle school
+  languages: ["en"]  # English only for core evaluation
+  chapters_per_grade: [12, 14, 15, 16, 16, 16]  # Actual chapter counts
+  target_bundles: 5000  # Larger corpus for Math + Science
+  data_dir: "data/processed"
+  raw_dir: "data/raw"
+
+learning_outcomes:
+  total_los: 100
+  mapping_source: "manual"  # or "ncert_official" when available
+  prerequisite_edges: 200
+  expert_reviewed: false  # Mark as false for solo research
+
+evidence:
+  bundle_types:
+    - concept
+    - example
+    - visual
+    - exercise
+    - prerequisite
+    - misconception
+  max_bundle_length: 512  # tokens
+  min_bundle_length: 32
+  validation_required: true
+  provenance_required: true
+
+retrieval:
+  dense:
+    model: "sentence-transformers/all-MiniLM-L6-v2"
+    batch_size: 32
+    normalize: true
+    device: "cpu"
+  
+  sparse:
+    algorithm: "BM25Okapi"
+    k1: 1.5
+    b: 0.75
+    tokenizer: "simple"
+  
+  visual:
+    enabled: true
+    conditional: true  # Only when needed
+    model: "clip-ViT-B-32"  # Or "sentence-transformers/clip-ViT-B-32"
+    extract_figures: true
+  
+  fusion:
+    method: "RRF"
+    k: 60
+    top_candidates: 20
+  
+  reranker:
+    enabled: true
+    model: "cross-encoder/ms-marco-MiniLM-L6-v2"
+    top_k: 12
+    device: "cpu"
+
+selection:
+  method: "PS-Evidence"
+  max_bundles: 3
+  token_budget: 420
+  require_role_coverage: true
+  
+  role_policy:
+    direct_fact: ["concept"]
+    conceptual: ["concept", "example"]
+    diagram: ["concept", "visual"]
+    worked_problem: ["example"]
+    misconception: ["concept", "misconception"]
+    prerequisite_gap: ["concept", "prerequisite"]
+  
+  weights:
+    relevance: 1.0
+    role_coverage: 0.3
+    grade_fit: 0.2
+    prerequisite_value: 0.15
+    redundancy_penalty: 0.1
+    length_penalty: 0.15
+
+prerequisite:
+  enabled: true
+  mastery_threshold: 0.5
+  unknown_mastery_blocks: true  # Conservative: unknown ≠ gap
+  max_prerequisite_depth: 2
+  graph_file: "data/graph/prerequisites.jsonl"
+
+generation:
+  # Local model (default)
+  provider: "ollama"
+  model: "phi3:3b-mini-instruct"
+  temperature: 0.3
+  max_tokens: 256
+  top_p: 0.9
+  
+  # API fallback (optional)
+  api_provider: null  # "openai" | "anthropic" | null
+  api_key_env: "LLM_API_KEY"
+  api_model: "gpt-3.5-turbo"  # or "claude-3-haiku-20240307"
+  
+  prompt:
+    system: "You are a grade-aligned tutor. Use only the supplied evidence. Do not invent facts. If evidence is insufficient, say so clearly."
+    include_source_ids: true
+    include_grade: true
+    include_language: true
+    max_evidence_bundles: 3
+
+verification:
+  enabled: true
+  method: "NLI"
+  model: "microsoft/deberta-v3-base-mnli"
+  threshold: 0.75  # Calibrate on dev set
+  device: "cpu"
+  
+  claim_extraction:
+    method: "sentence"  # Simple sentence splitting initially
+    min_claim_length: 10
+  
+  fallback:
+    on_low_support: true
+    on_contradiction: true
+    provide_source_excerpt: true
+
+evaluation:
+  gold_questions_file: "data/gold/questions_pilot.jsonl"
+  
+  metrics:
+    retrieval:
+      - "recall@5"
+      - "recall@10"
+      - "ndcg@5"
+      - "ndcg@10"
+      - "mrr"
+      - "role_coverage@3"
+      - "grade_fit_rate"
+    
+    generation:
+      - "claim_support_rate"
+      - "contradiction_rate"
+      - "answer_relevance"
+      - "source_traceability"
+    
+    efficiency:
+      - "avg_bundles_used"
+      - "avg_tokens_used"
+      - "latency_p50"
+      - "latency_p95"
+  
+  ablations:
+    - name: "B0"
+      description: "Dense retrieval only, ordinary chunks"
+      config: "configs/baseline_dense.yaml"
+    
+    - name: "B1"
+      description: "BM25+Dense RRF, ordinary chunks"
+      config: "configs/baseline_hybrid.yaml"
+    
+    - name: "B2"
+      description: "BM25+Dense RRF, structured bundles, top-k"
+      config: "configs/baseline_bundles.yaml"
+    
+    - name: "F1"
+      description: "Bundles + role constraints only"
+      config: "configs/ablation_roles.yaml"
+    
+    - name: "F2"
+      description: "Bundles + PS-Evidence, no prerequisites"
+      config: "configs/ablation_no_prereq.yaml"
+    
+    - name: "FULL"
+      description: "Complete TRACE-Tutor"
+      config: "configs/experiment_trace.yaml"
+
+accessibility:
+  modes:
+    - "standard"
+    - "simplified"
+    - "visual"
+    - "audio_script"
+  
+  simplification:
+    max_sentence_length: 15
+    readability_target: "grade-2"
+  
+  alt_text:
+    generate: true
+    verify: false  # Manual verification recommended
+
+privacy:
+  pseudonymize_users: true
+  log_level: "INFO"
+  retain_days: 90
+  audit_enabled: true
+  pii_fields_blocked: ["name", "email", "phone", "address"]
+
+experiment:
+  output_dir: "runs"
+  save_ranks: true
+  save_answers: true
+  save_evidence: true
+  save_timings: true
+  create_manifest: true
+
+hardware:
+  device: "cpu"
+  num_workers: 4
+  batch_size: 16
+  cache_embeddings: true
+  cache_dir: "data/interim/cache"

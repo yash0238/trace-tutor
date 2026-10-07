@@ -1,0 +1,142 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trace-tutor"
+version = "1.0.0"
+description = "Trajectory- and Role-Aware Curriculum Evidence Tutor for Primary Education"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "TRACE-Tutor Research Team"}
+]
+keywords = [
+    "education",
+    "AI tutor",
+    "RAG",
+    "curriculum",
+    "pedagogy",
+    "NCERT"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+
+dependencies = [
+    "pydantic>=2.5.0",
+    "pyyaml>=6.0",
+    "numpy>=1.24.0",
+    "pandas>=2.0.0",
+    "scipy>=1.10.0",
+    "scikit-learn>=1.3.0",
+    "rank-bm25>=0.2.2",
+    "sentence-transformers>=2.2.0",
+    "faiss-cpu>=1.7.4",
+    "networkx>=3.1",
+    "pymupdf>=1.23.0",
+    "pillow>=10.0.0",
+    "requests>=2.31.0",
+    "tqdm>=4.66.0",
+    "python-dotenv>=1.0.0",
+    "langchain>=0.1.0",
+    "langchain-community>=0.0.20",
+    "ollama>=0.1.0",
+    "openai>=1.10.0",
+    "anthropic>=0.18.0",
+    "transformers>=4.36.0",
+    "torch>=2.1.0",
+    "evaluate>=0.4.1",
+    "bert-score>=0.3.13",
+    "nltk>=3.8.1",
+    "spacy>=3.7.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "flake8>=6.1.0",
+    "mypy>=1.5.0",
+    "pre-commit>=3.4.0"
+]
+api = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "python-multipart>=0.0.6"
+]
+ui = [
+    "streamlit>=1.28.0",
+    "plotly>=5.17.0",
+    "altair>=5.1.0"
+]
+all = [
+    "trace-tutor[dev,api,ui]"
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/trace-tutor"
+Documentation = "https://github.com/your-username/trace-tutor/wiki"
+Repository = "https://github.com/your-username/trace-tutor"
+"Bug Tracker" = "https://github.com/your-username/trace-tutor/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["trace_tutor*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | data
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip_gitignore = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--verbose",
+    "--cov=trace_tutor",
+    "--cov-report=term-missing",
+    "--cov-report=html"
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true

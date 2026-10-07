@@ -1,0 +1,55 @@
+# Core Dependencies
+pydantic==2.5.3
+pyyaml==6.0.1
+numpy==1.26.2
+pandas==2.1.4
+scipy==1.11.4
+scikit-learn==1.3.2
+
+# Retrieval & Indexing
+rank-bm25==0.2.2
+sentence-transformers==2.2.2
+faiss-cpu==1.7.4
+
+# Graph & Curriculum
+networkx==3.2.1
+
+# PDF & Document Processing
+pymupdf==1.23.8
+pillow==10.1.0
+pytesseract==0.3.10
+
+# HTTP & Downloads
+requests==2.31.0
+tqdm==4.66.1
+python-dotenv==1.0.0
+
+# LLM Interfaces
+langchain==0.1.5
+langchain-community==0.0.20
+ollama==0.1.6
+openai==1.10.0
+anthropic==0.18.1
+
+# Deep Learning (CPU-optimized)
+torch==2.1.2+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+transformers==4.36.2
+accelerate==0.25.0
+
+# Evaluation
+evaluate==0.4.1
+bert-score==0.3.13
+nltk==3.8.1
+spacy==3.7.2
+
+# Optional but useful
+fastapi==0.108.0
+uvicorn[standard]==0.25.0
+streamlit==1.29.0
+plotly==5.18.0
+
+# Development
+pytest==7.4.3
+pytest-cov==4.1.0
+black==23.12.1
+isort==5.13.2

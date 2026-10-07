@@ -1,0 +1,105 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# Data (DO NOT COMMIT RAW DATA)
+data/raw/
+data/processed/*.pdf
+data/processed/*.png
+data/processed/*.jpg
+*.pdf
+*.docx
+*.pptx
+
+# Allow example/demo data
+!data/gold/example_*.jsonl
+!docs/*.pdf
+
+# Models
+models/
+*.bin
+*.onnx
+*.pt
+*.pth
+*.safetensors
+
+# Runs
+runs/
+experiments/
+outputs/
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Testing
+.pytest_cache/
+.tox/
+
+# Environment
+.env
+.env.local
+*.env
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# API keys (extra safety)
+**/api_keys.json
+**/*_secret*.json
+**/*_key*.txt
