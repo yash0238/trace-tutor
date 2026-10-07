@@ -1,0 +1,25 @@
+{
+  "total_bundles": 84,
+  "by_grade": {
+    "3": 14,
+    "4": 33,
+    "5": 21,
+    "6": 5,
+    "7": 3,
+    "8": 8
+  },
+  "by_subject": {
+    "Mathematics": 68,
+    "Science": 16
+  },
+  "by_role": {
+    "concept": 59,
+    "example": 9,
+    "exercise": 23
+  },
+  "by_chapter": {
+    "ch1": 84
+  },
+  "validation_errors": 120,
+  "source_chapters": 80
+}

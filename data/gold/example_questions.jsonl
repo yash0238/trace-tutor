@@ -1,0 +1,10 @@
+{"id": "q001", "text": "Why do plants need sunlight?", "grade": 4, "subject": "EVS", "query_type": "conceptual", "target_lo": "photosynthesis_g4", "needs_visual": false, "mastery": {}}
+{"id": "q002", "text": "What are the main parts of a plant?", "grade": 3, "subject": "EVS", "query_type": "direct_fact", "target_lo": "plants_parts_g3", "needs_visual": true, "mastery": {}}
+{"id": "q003", "text": "How does water reach the leaves of a plant?", "grade": 5, "subject": "EVS", "query_type": "conceptual", "target_lo": "plant_transport_g5", "needs_visual": false, "mastery": {}}
+{"id": "q004", "text": "Give an example of a herbivore animal.", "grade": 3, "subject": "EVS", "query_type": "direct_fact", "target_lo": "animals_types_g3", "needs_visual": false, "mastery": {}}
+{"id": "q005", "text": "What is the water cycle?", "grade": 4, "subject": "EVS", "query_type": "conceptual", "target_lo": "water_cycle_g4", "needs_visual": true, "mastery": {}}
+{"id": "q006", "text": "Why do we need to save water?", "grade": 3, "subject": "EVS", "query_type": "conceptual", "target_lo": "water_conservation_g3", "needs_visual": false, "mastery": {}}
+{"id": "q007", "text": "What is photosynthesis?", "grade": 5, "subject": "EVS", "query_type": "direct_fact", "target_lo": "photosynthesis_g5", "needs_visual": false, "mastery": {}}
+{"id": "q008", "text": "How do animals help plants?", "grade": 4, "subject": "EVS", "query_type": "conceptual", "target_lo": "interdependence_g4", "needs_visual": false, "mastery": {}}
+{"id": "q009", "text": "What are the different seasons?", "grade": 3, "subject": "EVS", "query_type": "direct_fact", "target_lo": "seasons_g3", "needs_visual": false, "mastery": {}}
+{"id": "q010", "text": "Why do leaves change color in autumn?", "grade": 5, "subject": "EVS", "query_type": "conceptual", "target_lo": "seasons_plants_g5", "needs_visual": false, "mastery": {}}
