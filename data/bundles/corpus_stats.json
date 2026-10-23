@@ -1,9 +1,26 @@
 {
-  "total_bundles": 0,
-  "by_grade": {},
-  "by_subject": {},
-  "by_role": {},
-  "by_chapter": {},
-  "validation_errors": 0,
+  "total_bundles": 190,
+  "by_grade": {
+    "3": 21,
+    "4": 42,
+    "5": 40,
+    "6": 29,
+    "7": 21,
+    "8": 37
+  },
+  "by_subject": {
+    "Mathematics": 103,
+    "Science": 87
+  },
+  "by_role": {
+    "concept": 131,
+    "example": 28,
+    "exercise": 46
+  },
+  "by_chapter": {
+    "ch1": 84,
+    "ch2": 106
+  },
+  "validation_errors": 301,
   "source_chapters": 80
 }
