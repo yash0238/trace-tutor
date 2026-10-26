@@ -100,7 +100,7 @@ prerequisite:
 generation:
   # Local model (default)
   provider: "ollama"
-  model: "phi3:3b-mini-instruct"
+  model: "phi3:latest"
   temperature: 0.3
   max_tokens: 256
   top_p: 0.9
