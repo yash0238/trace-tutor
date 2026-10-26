@@ -12,7 +12,7 @@ pip install -r requirements.txt
 
 # Install Ollama (local LLM)
 # Download from: https://ollama.ai/download
-ollama pull phi3:3b-mini-instruct
+ollama pull phi3  # ~2GB, 3.8B parameters
 
 # Build corpus from your PDFs
 export PYTHONPATH=$PWD/src  # Linux/Mac

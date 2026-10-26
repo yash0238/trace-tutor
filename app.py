@@ -205,6 +205,10 @@ def render_sidebar(tutor):
 
 def render_answer_card(response, show_evidence, show_verification):
     """Render professional answer card."""
+    # Cache hit indicator
+    if hasattr(response, 'cached') and response.cached:
+        st.success("⚡ **INSTANT ANSWER** - Retrieved from semantic cache (10-20x faster!)")
+    
     # Main answer
     st.markdown(f"""
     <div class="evidence-card">
@@ -382,25 +386,38 @@ def main():
     
     col1, col2 = st.columns([3, 1])
     
+    # Initialize question in session state
+    if 'current_question' not in st.session_state:
+        st.session_state.current_question = ""
+    
     with col1:
         question = st.text_area(
             "Enter your question here:",
+            value=st.session_state.current_question,
             height=100,
             placeholder=f"Ask any {subject} question for Grade {grade}...",
-            help="Type your question and click 'Get Answer'"
+            help="Type your question and click 'Get Answer'",
+            key="question_input"
         )
+        # Update session state
+        st.session_state.current_question = question
     
     with col2:
         st.markdown("**Quick Examples:**")
-        for ex in examples.get(subject, [])[:3]:
-            if st.button(ex, key=ex, use_container_width=True):
-                question = ex
+        for i, ex in enumerate(examples.get(subject, [])[:3]):
+            if st.button(ex, key=f"example_{i}_{ex[:20]}", use_container_width=True):
+                st.session_state.current_question = ex
+                st.rerun()
     
     # Submit button
     if st.button("🎯 Get Answer", type="primary", use_container_width=False):
         if not question or len(question.strip()) < 5:
             st.warning("⚠️ Please enter a valid question (at least 5 characters)")
             return
+        
+        # Clear previous results
+        if 'last_response' in st.session_state:
+            del st.session_state.last_response
         
         # Show processing
         with st.spinner("🤔 Thinking... (retrieving evidence, generating answer, verifying claims)"):
@@ -417,47 +434,55 @@ def main():
                 
                 elapsed = time.time() - start_time
                 
-                # Display results
-                st.markdown("---")
+                # Store in session state
+                st.session_state.last_response = response
                 
-                # Answer card
-                render_answer_card(response, show_evidence, show_verification)
-                
-                # Pain point indicators
-                render_pain_point_indicators(response)
-                
-                # Performance metrics
-                if show_timings:
-                    with st.expander("⚡ Performance Metrics"):
-                        perf_data = {
-                            "Metric": ["Total Time", "Generation Time", "Evidence Bundles", "Tokens Used", "Support Score"],
-                            "Value": [
-                                f"{response.total_time:.2f}s",
-                                f"{response.generation_time:.2f}s",
-                                str(len(response.evidence_bundle_ids)),
-                                "~" + str(len(response.answer.split()) * 2),
-                                f"{response.support_score:.0%}"
-                            ]
-                        }
-                        st.dataframe(pd.DataFrame(perf_data), hide_index=True, use_container_width=True)
-                
-                # Feedback
-                st.markdown("---")
-                st.markdown("### 📊 Was this answer helpful?")
-                col1, col2, col3, col4 = st.columns(4)
-                with col1:
-                    st.button("👍 Very Helpful", use_container_width=True)
-                with col2:
-                    st.button("🙂 Helpful", use_container_width=True)
-                with col3:
-                    st.button("😐 Somewhat", use_container_width=True)
-                with col4:
-                    st.button("👎 Not Helpful", use_container_width=True)
-            
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
                 with st.expander("🔍 Debug Info"):
                     st.code(str(e))
+                return
+    
+    # Display results if available
+    if 'last_response' in st.session_state:
+        response = st.session_state.last_response
+        
+        # Display results
+        st.markdown("---")
+        
+        # Answer card
+        render_answer_card(response, show_evidence, show_verification)
+        
+        # Pain point indicators
+        render_pain_point_indicators(response)
+        
+        # Performance metrics
+        if show_timings:
+            with st.expander("⚡ Performance Metrics"):
+                perf_data = {
+                    "Metric": ["Total Time", "Generation Time", "Evidence Bundles", "Tokens Used", "Support Score"],
+                    "Value": [
+                        f"{response.total_time:.2f}s",
+                        f"{response.generation_time:.2f}s",
+                        str(len(response.evidence_bundle_ids)),
+                        "~" + str(len(response.answer.split()) * 2),
+                        f"{response.support_score:.0%}"
+                    ]
+                }
+                st.dataframe(pd.DataFrame(perf_data), hide_index=True, use_container_width=True)
+        
+        # Feedback
+        st.markdown("---")
+        st.markdown("### 📊 Was this answer helpful?")
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.button("👍 Very Helpful", use_container_width=True)
+        with col2:
+            st.button("🙂 Helpful", use_container_width=True)
+        with col3:
+            st.button("😐 Somewhat", use_container_width=True)
+        with col4:
+            st.button("👎 Not Helpful", use_container_width=True)
 
 
 if __name__ == "__main__":

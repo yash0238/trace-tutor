@@ -219,3 +219,59 @@ hardware:
   batch_size: 16
   cache_embeddings: true
   cache_dir: "data/interim/cache"
+
+# Semantic caching for 10-20x speedup on similar questions
+cache:
+  dir: "data/cache"
+  similarity_threshold: 0.92  # High threshold (0.92-0.95) to avoid false positives
+  max_size: 1000  # Maximum cached responses
+  enabled: true
+
+# Multimodal configuration
+multimodal:
+  enabled: true
+  
+  weights:
+    text: 0.5
+    image: 0.3
+    audio: 0.2
+  
+  clip:
+    model: "sentence-transformers/clip-ViT-B-32-multilingual-v1"
+    device: "cpu"
+    embedding_dim: 512
+  
+  whisper:
+    model_size: "base"  # tiny, base, small, medium, large
+    device: "cpu"
+  
+  tts:
+    engine: "gtts"
+    default_language: "en"
+    slow_for_grades: [1, 2]
+  
+  gemini:
+    model: "gemini-2.0-flash"
+    enabled: false  # Requires API key
+  
+  mmr_lambda: 0.7  # Relevance vs diversity (1.0 = pure relevance)
+
+# Faithfulness gate configuration
+faithfulness:
+  enabled: true
+  threshold: 0.7  # Minimum support score
+  use_llm_verification: false  # Use heuristic for speed
+  
+# Clarification agent configuration  
+clarification:
+  enabled: true
+  confidence_threshold: 0.6  # Below this, ask for clarification
+  
+# Advanced retrieval components
+advanced_retrieval:
+  use_late_interaction: false  # ColBERT-style MaxSim (slower but more accurate)
+  use_difficulty_aware: true  # Adjust to student grade
+  use_bandit_fusion: false  # Learn optimal fusion weights
+  bandit_weights_path: "data/cache/bandit_weights.json"
+  grade_weight: 0.25  # Weight for difficulty matching
+

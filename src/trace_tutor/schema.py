@@ -72,6 +72,10 @@ class Evidence(BaseModel):
     figure_path: Optional[str] = Field(None, description="Path to extracted figure image")
     alt_text: Optional[str] = Field(None, description="Accessibility alt-text")
     
+    # Multimodal metadata
+    modality: str = Field(default="text", description="Content modality: text, image, table, audio")
+    metadata: dict = Field(default_factory=dict, description="Modality-specific metadata (embeddings, etc.)")
+    
     # Exercise content
     exercise_text: Optional[str] = Field(None, description="Exercise question")
     exercise_solution: Optional[str] = Field(None, description="Verified solution")
@@ -129,11 +133,19 @@ class Evidence(BaseModel):
 class Query(BaseModel):
     """
     Student query with curriculum context and learner state.
+    Supports multimodal input: text, image, and audio.
     """
     
     # Identity
     id: str = Field(..., description="Query identifier")
     text: str = Field(..., min_length=5, description="Question text")
+    
+    # Multimodal inputs
+    image_path: Optional[str] = Field(None, description="Path to uploaded image (for visual queries)")
+    audio_path: Optional[str] = Field(None, description="Path to audio file (for voice queries)")
+    audio_transcription: Optional[str] = Field(None, description="Transcribed text from audio")
+    audio_language: Optional[str] = Field(None, description="Detected audio language")
+    audio_confidence: Optional[float] = Field(None, description="Transcription confidence score")
     
     # Curriculum context
     grade: int = Field(..., ge=1, le=12, description="Student grade level")
@@ -223,6 +235,11 @@ class Answer(BaseModel):
     explanation: Optional[str] = Field(None, description="Additional explanation")
     next_step: Optional[str] = Field(None, description="Suggested next action")
     
+    # Multimodal output
+    audio_path: Optional[str] = Field(None, description="Path to TTS audio file")
+    audio_language: Optional[str] = Field(None, description="Audio output language")
+    visual_evidence_paths: list[str] = Field(default_factory=list, description="Paths to visual evidence")
+    
     # Evidence provenance
     evidence_bundle_ids: list[str] = Field(
         ...,
@@ -259,6 +276,9 @@ class Answer(BaseModel):
     model_version: Optional[str] = Field(None, description="Model version")
     generation_time: float = Field(..., description="Generation time in seconds")
     total_time: float = Field(..., description="Total pipeline time in seconds")
+    retrieval_time: float = Field(default=0.0, description="Retrieval time in seconds")
+    selection_time: float = Field(default=0.0, description="Selection time in seconds")
+    cached: bool = Field(default=False, description="Whether this was a cache hit")
     
     # Status
     status: Literal["answer", "fallback", "clarify", "abstain"] = Field(
